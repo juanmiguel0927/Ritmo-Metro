@@ -28,9 +28,14 @@
         }
         h1 {
             color: #2c3e50;
-            margin-bottom: 20px;
+            margin-bottom: 5px; /* Adjusted margin */
             font-size: 2.5rem;
             font-weight: bold;
+        }
+        .designer-credit {
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 20px;
         }
         .concept-section {
             margin-bottom: 30px;
@@ -153,6 +158,41 @@
         .polymeter-track:nth-child(2) .polymeter-beat { background-color: #2ecc71; }
         .polymeter-track:nth-child(3) .polymeter-beat { background-color: #9b59b6; }
 
+        .modulation-visualizer {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 20px;
+            height: 100px;
+            border: 2px dashed #95a5a6;
+            border-radius: 10px;
+            overflow: hidden;
+            position: relative;
+            flex-direction: column;
+        }
+        .modulation-row {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            padding: 5px 0;
+        }
+        .note-symbol {
+            font-size: 2.5rem; /* Adjust size as needed */
+            margin: 0 10px;
+            color: #34495e;
+            font-weight: bold;
+        }
+        .note-symbol.active {
+            color: #e74c3c;
+            transform: scale(1.1);
+        }
+        .tempo-display {
+            font-size: 1.2rem;
+            color: #2c3e50;
+            margin-top: 10px;
+        }
+
         @media (max-width: 768px) {
             h1 {
                 font-size: 2rem;
@@ -181,16 +221,20 @@
                 width: 15px;
                 height: 15px;
             }
+            .note-symbol {
+                font-size: 2rem;
+            }
         }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>Explorando Ritmo y Metro 🎵</h1>
+        <p class="designer-credit">Diseñado por Juan Miguel Rios Redondo</p>
 
         <div class="concept-section">
-            <h2>El Ritmo</h2>
-            <p>El <strong>ritmo</strong> se refiere a la organización del tiempo en la música, incluyendo la duración de las notas, los acentos y el flujo general de los gestos musicales.</p>
+            <h2>El Ritmo y Ritmo Compuesto</h2>
+            <p>El <strong>ritmo</strong> se refiere a la organización del tiempo en la música, incluyendo la duración de las notas individuales, de las armonías (el ritmo armónico), de **todas las partes en una textura (el ritmo compuesto)**, de las longitudes de las frases, de los cambios de dinámica, de los cambios de textura, etc. También comprende las cualidades de acentuación que animan a estos diseños duracionales: los acentos métricos, los acentos causados por las notas largas, por las notas agudas y graves, por el cambio armónico, por los acentos dinámicos, etc. Y por último, el ritmo se refiere a la continuidad y el flujo de los gestos musicales a través de todas estas duraciones y acentuaciones.</p>
             <div class="controls">
                 <button class="button" onclick="startRhythm()">Iniciar Ritmo</button>
                 <button class="button" onclick="stopRhythm()">Detener Ritmo</button>
@@ -213,8 +257,8 @@
         </div>
 
         <div class="concept-section">
-            <h2>Metros Irregulares</h2>
-            <p>En la música del siglo XX, las unidades métricas pueden ser de longitud variable, con <strong>valores añadidos</strong> o cambios continuos en los agrupamientos de tiempos.</p>
+            <h2>Metros Irregulares y Valor Añadido</h2>
+            <p>En la música del siglo XX, las unidades métricas pueden ser de longitud variable, con <strong>valores añadidos</strong> (la adición de una duración corta a un patrón rítmico regular) o cambios continuos en los agrupamientos de tiempos. Esto crea una sensación de imprevisibilidad rítmica.</p>
             <div class="controls">
                 <button class="button" onclick="startIrregularMeter()">Iniciar Metro Irregular</button>
                 <button class="button" onclick="stopIrregularMeter()">Detener Metro Irregular</button>
@@ -225,7 +269,7 @@
 
         <div class="concept-section">
             <h2>Metro Cambiante</h2>
-            <p>El <strong>metro cambiante</strong> ocurre cuando la signatura métrica de una pieza cambia frecuentemente, creando una sensación de fluidez o inestabilidad rítmica.</p>
+            <p>El <strong>metro cambiante</strong> ocurre cuando la signatura métrica de una pieza cambia frecuentemente, a menudo de un compás a otro. Esto genera una sensación de fluidez rítmica y puede desorientar la percepción de un pulso constante.</p>
             <div class="controls">
                 <button class="button" onclick="startChangingMeter()">Iniciar Metro Cambiante</button>
                 <button class="button" onclick="stopChangingMeter()">Detener Metro Cambiante</button>
@@ -259,6 +303,48 @@
             <div class="visualizer" id="ametryVisualizer"></div>
             <div class="output-box" id="ametryOutput">Ametría: -</div>
         </div>
+
+        <div class="concept-section">
+            <h2>Tempo</h2>
+            <p>El <strong>tempo</strong> se refiere a la velocidad a la que se ejecuta una pieza musical. Generalmente se indica al principio de la obra con términos italianos (como <em>Allegro</em>, <em>Andante</em>, <em>Presto</em>) o con indicaciones metronómicas (por ejemplo, "negra = 120").</p>
+            <p>Puedes observar cómo el tempo afecta las visualizaciones de Ritmo, Metro, Metros Irregulares y Metro Cambiante, ya que todos ellos se basan en la velocidad del pulso.</p>
+        </div>
+
+        <div class="concept-section">
+            <h2>Modulación Métrica</h2>
+            <p>La <strong>modulación métrica</strong> es una técnica en la que el tempo de una pieza cambia de tal manera que una duración de nota en el tempo anterior se convierte en una nueva duración de nota en el nuevo tempo, manteniendo una relación proporcional. Esto permite transiciones suaves entre diferentes velocidades y metros.</p>
+            <p><strong>Ejemplo:</strong> Una negra del tempo actual (100 BPM) se convierte en una corchea con puntillo del nuevo tempo.</p>
+            <div class="controls">
+                <button class="button" onclick="startMetricModulation()">Demostrar Modulación</button>
+                <button class="button" onclick="stopMetricModulation()">Detener Demostración</button>
+            </div>
+            <div class="modulation-visualizer" id="metricModulationVisualizer">
+                <div class="modulation-row">
+                    <span class="note-symbol" id="modOldNote">♩</span>
+                    <span class="tempo-display" id="modOldTempo">100 BPM</span>
+                </div>
+                <div class="modulation-row">
+                    <span class="note-symbol">=</span>
+                </div>
+                <div class="modulation-row">
+                    <span class="note-symbol" id="modNewNote">♪.</span>
+                    <span class="tempo-display" id="modNewTempo">Calculando...</span>
+                </div>
+            </div>
+            <div class="output-box" id="metricModulationOutput">Modulación Métrica: -</div>
+        </div>
+
+        <div class="concept-section">
+            <h2>Motivos Rítmicos</h2>
+            <p>Los <strong>motivos rítmicos</strong> son patrones rítmicos cortos y distintivos que se repiten y desarrollan a lo largo de una composición, contribuyendo a su coherencia y unidad rítmica. Son como "ideas" rítmicas que el compositor utiliza para construir la pieza.</p>
+            <p><strong>Ejemplo:</strong> Un motivo simple de "larga-corta-larga".</p>
+            <div class="controls">
+                <button class="button" onclick="playRhythmicMotif()">Reproducir Motivo</button>
+                <button class="button" onclick="stopRhythmicMotif()">Detener Motivo</button>
+            </div>
+            <div class="visualizer" id="rhythmicMotifVisualizer"></div>
+            <div class="output-box" id="rhythmicMotifOutput">Motivo Rítmico: -</div>
+        </div>
     </div>
 
     <script>
@@ -287,6 +373,24 @@
             { id: 'polymeterTrack2', beats: 3, currentBeat: 0, color: '#2ecc71' },
             { id: 'polymeterTrack3', beats: 5, currentBeat: 0, color: '#9b59b6' }
         ];
+
+        let metricModulationInterval;
+        let metricModulationCurrentBeat = 0;
+        const initialBPM = 100; // Negra = 100 BPM
+        // Modulación: Negra (1) -> Corchea con puntillo (0.75)
+        // Nueva BPM = Initial BPM * (Valor antigua / Valor nueva) = 100 * (1 / 0.75) = 100 * 1.333... = 133.33 BPM
+        const newBPM = initialBPM * (1 / 0.75); // Negra = 1, Corchea con puntillo = 0.75
+        const oldNoteDurationMs = (60 / initialBPM) * 1000; // Duration of a quarter note at 100 BPM in ms
+        const newNoteDurationMs = (60 / newBPM) * 1000 * 0.75; // Duration of a dotted eighth note at new BPM in ms
+
+        let rhythmicMotifInterval;
+        let rhythmicMotifPattern = [
+            { duration: 600, symbol: '♩' }, // Long
+            { duration: 300, symbol: '♪' }, // Short
+            { duration: 600, symbol: '♩' }, // Long
+            { duration: 300, symbol: '♪' }  // Short
+        ];
+        let rhythmicMotifIndex = 0;
 
         // Función para generar un sonido simple
         function playClick(frequency = 440, duration = 50, volume = 0.5) {
@@ -394,9 +498,9 @@
                     beats[meterCurrentBeat].classList.add('active');
                     if (meterCurrentBeat === 0) {
                         beats[meterCurrentBeat].classList.add('strong'); // Re-add strong class for the first beat
-                        playClick(660, 80, 0.9); // Sonido más agudo para el primer pulso (fuerte)
+                        playClick(660, 80, 0.9);
                     } else {
-                        playClick(440, 50, 0.7); // Sonido normal para otros pulsos
+                        playClick(440, 50, 0.7);
                     }
 
                     if (beatsPerMeasure === 6 && subdivision === 8) {
@@ -665,6 +769,97 @@
                 beats[i].classList.remove('active');
             }
             document.getElementById('ametryOutput').innerText = 'Ametría: -';
+        }
+
+        // --- Modulación Métrica ---
+        function startMetricModulation() {
+            stopMetricModulation();
+            metricModulationCurrentBeat = 0;
+
+            const modOldNote = document.getElementById('modOldNote');
+            const modNewNote = document.getElementById('modNewNote');
+            const modOldTempo = document.getElementById('modOldTempo');
+            const modNewTempo = document.getElementById('modNewTempo');
+            const metricModulationOutput = document.getElementById('metricModulationOutput');
+
+            modOldTempo.innerText = `${initialBPM} BPM`;
+            modNewTempo.innerText = `${newBPM.toFixed(2)} BPM`; // Display new BPM
+
+            metricModulationInterval = setInterval(() => {
+                // Toggle active class on notes
+                if (metricModulationCurrentBeat % 2 === 0) {
+                    modOldNote.classList.add('active');
+                    modNewNote.classList.remove('active');
+                    playClick(500, 60, 0.8); // Sound for old tempo beat
+                    metricModulationOutput.innerText = `Modulación Métrica: Negra a ${initialBPM} BPM`;
+                } else {
+                    modOldNote.classList.remove('active');
+                    modNewNote.classList.add('active');
+                    playClick(700, 60, 0.8); // Sound for new tempo beat
+                    metricModulationOutput.innerText = `Modulación Métrica: Corchea con puntillo a ${newBPM.toFixed(2)} BPM`;
+                }
+
+                metricModulationCurrentBeat++;
+            }, oldNoteDurationMs); // Interval based on the old note's duration
+        }
+
+        function stopMetricModulation() {
+            clearInterval(metricModulationInterval);
+            metricModulationCurrentBeat = 0;
+            document.getElementById('modOldNote').classList.remove('active');
+            document.getElementById('modNewNote').classList.remove('active');
+            document.getElementById('metricModulationOutput').innerText = 'Modulación Métrica: -';
+            document.getElementById('modNewTempo').innerText = 'Calculando...'; // Reset text
+        }
+
+        // --- Motivos Rítmicos ---
+        function playRhythmicMotif() {
+            stopRhythmicMotif();
+            rhythmicMotifIndex = 0;
+            const motifVisualizer = document.getElementById('rhythmicMotifVisualizer');
+            motifVisualizer.innerHTML = '';
+
+            // Create beats for the motif visualization
+            rhythmicMotifPattern.forEach((_, i) => {
+                const beat = document.createElement('div');
+                beat.className = 'beat';
+                motifVisualizer.appendChild(beat);
+            });
+
+            function triggerMotifBeat() {
+                const beats = motifVisualizer.children;
+                if (beats.length === 0) return;
+
+                // Deactivate previous beat
+                if (rhythmicMotifIndex > 0) {
+                    beats[rhythmicMotifIndex - 1].classList.remove('active');
+                } else if (beats.length > 0) {
+                    beats[beats.length - 1].classList.remove('active');
+                }
+
+                // Activate current beat
+                beats[rhythmicMotifIndex].classList.add('active');
+                playClick(440 + (rhythmicMotifIndex * 20), 50, 0.7); // Slightly different sound for each beat
+
+                document.getElementById('rhythmicMotifOutput').innerText = `Motivo Rítmico: Pulso ${rhythmicMotifIndex + 1}`;
+
+                const currentBeatDuration = rhythmicMotifPattern[rhythmicMotifIndex].duration;
+                rhythmicMotifIndex = (rhythmicMotifIndex + 1) % rhythmicMotifPattern.length;
+
+                rhythmicMotifInterval = setTimeout(triggerMotifBeat, currentBeatDuration);
+            }
+
+            triggerMotifBeat(); // Start the first beat
+        }
+
+        function stopRhythmicMotif() {
+            clearTimeout(rhythmicMotifInterval);
+            rhythmicMotifIndex = 0;
+            const beats = document.getElementById('rhythmicMotifVisualizer').children;
+            for (let i = 0; i < beats.length; i++) {
+                beats[i].classList.remove('active');
+            }
+            document.getElementById('rhythmicMotifOutput').innerText = 'Motivo Rítmico: -';
         }
     </script>
 </body>
