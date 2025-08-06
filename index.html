@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ritmo y Metro Interactivo</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: "Inter", sans-serif;
+            background-color: #f0f4f8;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        .container {
+            background-color: #ffffff;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            max-width: 900px;
+            width: 100%;
+            text-align: center;
+        }
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-size: 2.5rem;
+            font-weight: bold;
+        }
+        .concept-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            background-color: #ecf0f1;
+            border-radius: 10px;
+            text-align: left;
+        }
+        .concept-section h2 {
+            color: #34495e;
+            font-size: 1.8rem;
+            margin-bottom: 15px;
+            border-bottom: 2px solid #bdc3c7;
+            padding-bottom: 5px;
+        }
+        .concept-section p {
+            color: #555;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+        .controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+        .button {
+            background-color: #3498db;
+            color: white;
+            padding: 12px 25px;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            border: none;
+            font-size: 1rem;
+        }
+        .button:hover {
+            background-color: #2980b9;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+        }
+        .button:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+        .output-box {
+            background-color: #ecf0f1;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+            min-height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: #2c3e50;
+            font-weight: bold;
+            border: 2px solid #bdc3c7;
+        }
+        .visualizer {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 20px;
+            height: 80px;
+            border: 2px dashed #95a5a6;
+            border-radius: 10px;
+            overflow: hidden;
+            position: relative;
+        }
+        .beat {
+            width: 30px;
+            height: 30px;
+            background-color: #3498db;
+            border-radius: 50%;
+            margin: 0 5px;
+            opacity: 0.3;
+            transition: opacity 0.1s ease-in-out, transform 0.1s ease-in-out;
+            transform: scale(0.8);
+        }
+        .beat.active {
+            opacity: 1;
+            transform: scale(1.2);
+            background-color: #e74c3c;
+        }
+        .beat.strong {
+            background-color: #27ae60;
+        }
+        .beat.irregular {
+            background-color: #f39c12;
+        }
+        .polymeter-track {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 10px;
+            height: 40px;
+            border: 1px solid #95a5a6;
+            border-radius: 5px;
+            background-color: #ecf0f1;
+            padding: 5px;
+        }
+        .polymeter-beat {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            margin: 0 3px;
+            opacity: 0.3;
+            transition: opacity 0.1s ease-in-out, transform 0.1s ease-in-out;
+            transform: scale(0.8);
+        }
+        .polymeter-beat.active {
+            opacity: 1;
+            transform: scale(1.2);
+        }
+        .polymeter-track:nth-child(1) .polymeter-beat { background-color: #e74c3c; }
+        .polymeter-track:nth-child(2) .polymeter-beat { background-color: #2ecc71; }
+        .polymeter-track:nth-child(3) .polymeter-beat { background-color: #9b59b6; }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2rem;
+            }
+            .concept-section h2 {
+                font-size: 1.5rem;
+            }
+            .button {
+                padding: 10px 20px;
+                font-size: 0.9rem;
+            }
+            .output-box {
+                font-size: 1.2rem;
+            }
+            .visualizer {
+                height: 60px;
+            }
+            .beat {
+                width: 25px;
+                height: 25px;
+            }
+            .polymeter-track {
+                height: 30px;
+            }
+            .polymeter-beat {
+                width: 15px;
+                height: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Explorando Ritmo y Metro 🎵</h1>
+
+        <div class="concept-section">
+            <h2>El Ritmo</h2>
+            <p>El <strong>ritmo</strong> se refiere a la organización del tiempo en la música, incluyendo la duración de las notas, los acentos y el flujo general de los gestos musicales.</p>
+            <div class="controls">
+                <button class="button" onclick="startRhythm()">Iniciar Ritmo</button>
+                <button class="button" onclick="stopRhythm()">Detener Ritmo</button>
+            </div>
+            <div class="visualizer" id="rhythmVisualizer"></div>
+            <div class="output-box" id="rhythmOutput">Pulso: -</div>
+        </div>
+
+        <div class="concept-section">
+            <h2>El Metro</h2>
+            <p>El <strong>metro</strong> son los pulsos regularmente recurrentes que marcan el paso del tiempo, organizados en diseños de fuertes y débiles. La signatura métrica indica el valor y el número de pulsos.</p>
+            <div class="controls">
+                <button class="button" onclick="startMeter(4, 4)">Metro 4/4</button>
+                <button class="button" onclick="startMeter(3, 4)">Metro 3/4</button>
+                <button class="button" onclick="startMeter(6, 8)">Metro 6/8</button>
+                <button class="button" onclick="stopMeter()">Detener Metro</button>
+            </div>
+            <div class="visualizer" id="meterVisualizer"></div>
+            <div class="output-box" id="meterOutput">Metro: -</div>
+        </div>
+
+        <div class="concept-section">
+            <h2>Metros Irregulares</h2>
+            <p>En la música del siglo XX, las unidades métricas pueden ser de longitud variable, con <strong>valores añadidos</strong> o cambios continuos en los agrupamientos de tiempos.</p>
+            <div class="controls">
+                <button class="button" onclick="startIrregularMeter()">Iniciar Metro Irregular</button>
+                <button class="button" onclick="stopIrregularMeter()">Detener Metro Irregular</button>
+            </div>
+            <div class="visualizer" id="irregularMeterVisualizer"></div>
+            <div class="output-box" id="irregularMeterOutput">Metro Irregular: -</div>
+        </div>
+
+        <div class="concept-section">
+            <h2>Metro Cambiante</h2>
+            <p>El <strong>metro cambiante</strong> ocurre cuando la signatura métrica de una pieza cambia frecuentemente, creando una sensación de fluidez o inestabilidad rítmica.</p>
+            <div class="controls">
+                <button class="button" onclick="startChangingMeter()">Iniciar Metro Cambiante</button>
+                <button class="button" onclick="stopChangingMeter()">Detener Metro Cambiante</button>
+            </div>
+            <div class="visualizer" id="changingMeterVisualizer"></div>
+            <div class="output-box" id="changingMeterOutput">Metro Cambiante: -</div>
+        </div>
+
+        <div class="concept-section">
+            <h2>Polimetría</h2>
+            <p>La <strong>polimetría</strong> ocurre cuando diferentes partes de una textura musical están en metros diferentes simultáneamente, creando un efecto de conflicto o superposición.</p>
+            <div class="controls">
+                <button class="button" onclick="startPolymeter()">Iniciar Polimetría</button>
+                <button class="button" onclick="stopPolymeter()">Detener Polimetría</button>
+            </div>
+            <div id="polymeterVisualizer">
+                <div class="polymeter-track" id="polymeterTrack1"></div>
+                <div class="polymeter-track" id="polymeterTrack2"></div>
+                <div class="polymeter-track" id="polymeterTrack3"></div>
+            </div>
+            <div class="output-box" id="polymeterOutput">Polimetría: -</div>
+        </div>
+
+        <div class="concept-section">
+            <h2>Ametría</h2>
+            <p>La <strong>ametria</strong> se refiere a la ausencia de un pulso o metro regular y perceptible, donde los eventos rítmicos no se agrupan en patrones métricos consistentes, creando una sensación de "flotación".</p>
+            <div class="controls">
+                <button class="button" onclick="startAmetry()">Iniciar Ametría</button>
+                <button class="button" onclick="stopAmetry()">Detener Ametría</button>
+            </div>
+            <div class="visualizer" id="ametryVisualizer"></div>
+            <div class="output-box" id="ametryOutput">Ametría: -</div>
+        </div>
+    </div>
+
+    <script>
+        let rhythmInterval;
+        let rhythmBeatCount = 0;
+        let meterInterval;
+        let meterCurrentBeat = 0;
+        let meterBeatsPerMeasure = 0;
+        let meterSubdivision = 0;
+        let irregularMeterInterval;
+        let irregularMeterPattern = [4, 5, 4, 3, 6]; // Ejemplo de patrón irregular
+        let irregularMeterIndex = 0;
+        let irregularMeterBeatCount = 0;
+        let changingMeterInterval;
+        let changingMeterPatterns = [{beats: 4, sub: 4}, {beats: 3, sub: 4}, {beats: 5, sub: 4}];
+        let changingMeterIndex = 0;
+        let changingMeterCurrentBeat = 0;
+        let ametryInterval;
+        let ametryTimingPattern = [500, 300, 700, 400, 600, 800]; // Tiempos irregulares para ametría
+        let ametryTimingIndex = 0;
+        let ametryBeatCount = 0;
+
+        let polymeterIntervals = [];
+        let polymeterPatterns = [
+            { id: 'polymeterTrack1', beats: 4, currentBeat: 0, color: '#e74c3c' },
+            { id: 'polymeterTrack2', beats: 3, currentBeat: 0, color: '#2ecc71' },
+            { id: 'polymeterTrack3', beats: 5, currentBeat: 0, color: '#9b59b6' }
+        ];
+
+        // Función para generar un sonido simple
+        function playClick(frequency = 440, duration = 50, volume = 0.5) {
+            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+
+            oscillator.type = 'sine';
+            oscillator.frequency.setValueAtTime(frequency, audioContext.currentTime);
+            gainNode.gain.setValueAtTime(volume, audioContext.currentTime);
+
+            oscillator.start();
+            gainNode.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + duration / 1000);
+            oscillator.stop(audioContext.currentTime + duration / 1000);
+        }
+
+        // --- Ritmo ---
+        function startRhythm() {
+            stopRhythm();
+            const rhythmVisualizer = document.getElementById('rhythmVisualizer');
+            rhythmVisualizer.innerHTML = '';
+            for (let i = 0; i < 8; i++) { // 8 beats for rhythm visualization
+                const beat = document.createElement('div');
+                beat.className = 'beat';
+                rhythmVisualizer.appendChild(beat);
+            }
+
+            rhythmInterval = setInterval(() => {
+                const beats = rhythmVisualizer.children;
+                if (beats.length > 0) {
+                    // Desactivar el beat anterior
+                    if (rhythmBeatCount > 0) {
+                        beats[rhythmBeatCount - 1].classList.remove('active');
+                    } else if (beats.length > 0) { // Added for wrap-around
+                        beats[beats.length - 1].classList.remove('active');
+                    }
+                    // Activar el beat actual
+                    beats[rhythmBeatCount].classList.add('active');
+                    playClick(440, 50, 0.7); // Sonido para cada pulso
+
+                    document.getElementById('rhythmOutput').innerText = `Pulso: ${rhythmBeatCount + 1}`;
+                    rhythmBeatCount = (rhythmBeatCount + 1) % beats.length;
+                }
+            }, 500); // Cada 500ms (120 BPM)
+        }
+
+        function stopRhythm() {
+            clearInterval(rhythmInterval);
+            rhythmBeatCount = 0;
+            const beats = document.getElementById('rhythmVisualizer').children;
+            for (let i = 0; i < beats.length; i++) {
+                beats[i].classList.remove('active');
+            }
+            document.getElementById('rhythmOutput').innerText = 'Pulso: -';
+        }
+
+        // --- Metro ---
+        function startMeter(beatsPerMeasure, subdivision) {
+            stopMeter();
+            meterSubdivision = subdivision;
+            meterCurrentBeat = 0;
+
+            const meterVisualizer = document.getElementById('meterVisualizer');
+            meterVisualizer.innerHTML = '';
+
+            let effectiveBeats;
+            let intervalTime;
+
+            if (beatsPerMeasure === 6 && subdivision === 8) {
+                // For 6/8, visualize 2 main beats (dotted quarter notes)
+                effectiveBeats = 2;
+                intervalTime = 900; // Longer interval for dotted quarter notes (approx 60 BPM for dotted quarter)
+            } else {
+                // For simple meters like 4/4 and 3/4
+                effectiveBeats = beatsPerMeasure;
+                intervalTime = 600; // Standard interval for quarter notes (approx 100 BPM)
+            }
+            meterBeatsPerMeasure = effectiveBeats; // Update for the loop
+
+            for (let i = 0; i < effectiveBeats; i++) {
+                const beat = document.createElement('div');
+                beat.className = 'beat';
+                if (i === 0) {
+                    beat.classList.add('strong'); // Primer pulso fuerte
+                }
+                meterVisualizer.appendChild(beat);
+            }
+
+            meterInterval = setInterval(() => {
+                const beats = meterVisualizer.children;
+                if (beats.length > 0) {
+                    // Desactivar el beat anterior
+                    if (meterCurrentBeat > 0) {
+                        beats[meterCurrentBeat - 1].classList.remove('active');
+                        beats[meterCurrentBeat - 1].classList.remove('strong'); // Ensure strong class is removed
+                    } else if (beats.length > 0) {
+                        beats[beats.length - 1].classList.remove('active'); // Desactivar el último si volvemos al principio
+                        beats[beats.length - 1].classList.remove('strong'); // Ensure strong class is removed
+                    }
+
+                    // Activar el beat actual
+                    beats[meterCurrentBeat].classList.add('active');
+                    if (meterCurrentBeat === 0) {
+                        beats[meterCurrentBeat].classList.add('strong'); // Re-add strong class for the first beat
+                        playClick(660, 80, 0.9); // Sonido más agudo para el primer pulso (fuerte)
+                    } else {
+                        playClick(440, 50, 0.7); // Sonido normal para otros pulsos
+                    }
+
+                    if (beatsPerMeasure === 6 && subdivision === 8) {
+                        document.getElementById('meterOutput').innerText = `Metro: Pulso ${meterCurrentBeat + 1} de ${effectiveBeats} (6/8)`;
+                    } else {
+                        document.getElementById('meterOutput').innerText = `Metro: ${meterCurrentBeat + 1} / ${effectiveBeats} (${beatsPerMeasure}/${subdivision})`;
+                    }
+                    meterCurrentBeat = (meterCurrentBeat + 1) % effectiveBeats;
+                }
+            }, intervalTime); // Ajusta la velocidad del metro
+        }
+
+        function stopMeter() {
+            clearInterval(meterInterval);
+            meterCurrentBeat = 0;
+            meterBeatsPerMeasure = 0;
+            meterSubdivision = 0;
+            const beats = document.getElementById('meterVisualizer').children;
+            for (let i = 0; i < beats.length; i++) {
+                beats[i].classList.remove('active');
+                beats[i].classList.remove('strong');
+            }
+            document.getElementById('meterOutput').innerText = 'Metro: -';
+        }
+
+        // --- Metros Irregulares ---
+        function startIrregularMeter() {
+            stopIrregularMeter();
+            irregularMeterIndex = 0;
+            irregularMeterBeatCount = 0;
+
+            const irregularVisualizer = document.getElementById('irregularMeterVisualizer');
+            irregularVisualizer.innerHTML = '';
+            // Crear beats iniciales para el primer patrón
+            for (let i = 0; i < irregularMeterPattern[irregularMeterIndex]; i++) {
+                const beat = document.createElement('div');
+                beat.className = 'beat irregular';
+                if (i === 0) { // First beat of each irregular group is strong
+                    beat.classList.add('strong');
+                }
+                irregularVisualizer.appendChild(beat);
+            }
+
+            irregularMeterInterval = setInterval(() => {
+                const beats = irregularVisualizer.children;
+                if (beats.length === 0) return;
+
+                // Desactivar el beat anterior
+                if (irregularMeterBeatCount > 0) {
+                    beats[irregularMeterBeatCount - 1].classList.remove('active');
+                    beats[irregularMeterBeatCount - 1].classList.remove('strong');
+                } else if (beats.length > 0) {
+                    beats[beats.length - 1].classList.remove('active');
+                    beats[beats.length - 1].classList.remove('strong');
+                }
+
+                // Activar el beat actual
+                beats[irregularMeterBeatCount].classList.add('active');
+                if (irregularMeterBeatCount === 0) { // Strong accent for the first beat of each irregular group
+                    beats[irregularMeterBeatCount].classList.add('strong');
+                    playClick(600, 70, 0.85);
+                } else {
+                    playClick(550, 60, 0.8); // Sonido para metro irregular
+                }
+
+                document.getElementById('irregularMeterOutput').innerText = `Metro Irregular: ${irregularMeterBeatCount + 1} / ${irregularMeterPattern[irregularMeterIndex]}`;
+
+                irregularMeterBeatCount++;
+                if (irregularMeterBeatCount >= irregularMeterPattern[irregularMeterIndex]) {
+                    irregularMeterBeatCount = 0;
+                    irregularMeterIndex = (irregularMeterIndex + 1) % irregularMeterPattern.length;
+                    
+                    // Recrear los beats para el nuevo patrón
+                    irregularVisualizer.innerHTML = '';
+                    for (let i = 0; i < irregularMeterPattern[irregularMeterIndex]; i++) {
+                        const beat = document.createElement('div');
+                        beat.className = 'beat irregular';
+                        if (i === 0) { // First beat of new irregular group is strong
+                            beat.classList.add('strong');
+                        }
+                        irregularVisualizer.appendChild(beat);
+                    }
+                }
+            }, 400); // Velocidad para metros irregulares
+        }
+
+        function stopIrregularMeter() {
+            clearInterval(irregularMeterInterval);
+            irregularMeterIndex = 0;
+            irregularMeterBeatCount = 0;
+            const beats = document.getElementById('irregularMeterVisualizer').children;
+            for (let i = 0; i < beats.length; i++) {
+                beats[i].classList.remove('active');
+                beats[i].classList.remove('irregular');
+                beats[i].classList.remove('strong');
+            }
+            document.getElementById('irregularMeterOutput').innerText = 'Metro Irregular: -';
+        }
+
+        // --- Metro Cambiante ---
+        function startChangingMeter() {
+            stopChangingMeter();
+            changingMeterIndex = 0;
+            changingMeterCurrentBeat = 0;
+            
+            const changingMeterVisualizer = document.getElementById('changingMeterVisualizer');
+
+            function updateChangingMeter() {
+                const currentPattern = changingMeterPatterns[changingMeterIndex];
+                changingMeterVisualizer.innerHTML = '';
+                for (let i = 0; i < currentPattern.beats; i++) {
+                    const beat = document.createElement('div');
+                    beat.className = 'beat';
+                    if (i === 0) {
+                        beat.classList.add('strong');
+                    }
+                    changingMeterVisualizer.appendChild(beat);
+                }
+
+                changingMeterInterval = setInterval(() => {
+                    const beats = changingMeterVisualizer.children;
+                    if (beats.length === 0) return;
+
+                    if (changingMeterCurrentBeat > 0) {
+                        beats[changingMeterCurrentBeat - 1].classList.remove('active');
+                        beats[changingMeterCurrentBeat - 1].classList.remove('strong');
+                    } else if (beats.length > 0) {
+                        beats[beats.length - 1].classList.remove('active');
+                        beats[beats.length - 1].classList.remove('strong');
+                    }
+
+                    beats[changingMeterCurrentBeat].classList.add('active');
+                    if (changingMeterCurrentBeat === 0) {
+                        beats[changingMeterCurrentBeat].classList.add('strong');
+                        playClick(660, 80, 0.9);
+                    } else {
+                        playClick(440, 50, 0.7);
+                    }
+
+                    document.getElementById('changingMeterOutput').innerText = `Metro Cambiante: ${changingMeterCurrentBeat + 1} / ${currentPattern.beats} (${currentPattern.beats}/${currentPattern.sub})`;
+
+                    changingMeterCurrentBeat++;
+                    if (changingMeterCurrentBeat >= currentPattern.beats) {
+                        changingMeterCurrentBeat = 0;
+                        changingMeterIndex = (changingMeterIndex + 1) % changingMeterPatterns.length;
+                        clearInterval(changingMeterInterval); // Clear current interval before setting a new one
+                        updateChangingMeter(); // Call again to set up new meter
+                    }
+                }, 600); // Base tempo for changing meters
+            }
+            updateChangingMeter(); // Initial call
+        }
+
+        function stopChangingMeter() {
+            clearInterval(changingMeterInterval);
+            changingMeterIndex = 0;
+            changingMeterCurrentBeat = 0;
+            const beats = document.getElementById('changingMeterVisualizer').children;
+            for (let i = 0; i < beats.length; i++) {
+                beats[i].classList.remove('active');
+                beats[i].classList.remove('strong');
+            }
+            document.getElementById('changingMeterOutput').innerText = 'Metro Cambiante: -';
+        }
+
+        // --- Polimetría ---
+        function startPolymeter() {
+            stopPolymeter();
+            document.getElementById('polymeterOutput').innerText = 'Polimetría: Activa';
+
+            polymeterPatterns.forEach(pattern => {
+                const trackElement = document.getElementById(pattern.id);
+                trackElement.innerHTML = '';
+                for (let i = 0; i < pattern.beats; i++) {
+                    const beat = document.createElement('div');
+                    beat.className = 'polymeter-beat';
+                    beat.style.backgroundColor = pattern.color;
+                    trackElement.appendChild(beat);
+                }
+
+                const interval = setInterval(() => {
+                    const beats = trackElement.children;
+                    if (beats.length > 0) {
+                        // Desactivar el beat anterior
+                        if (pattern.currentBeat > 0) {
+                            beats[pattern.currentBeat - 1].classList.remove('active');
+                        } else { // Corrected: use beats.length for wrap-around
+                            beats[beats.length - 1].classList.remove('active');
+                        }
+
+                        // Activar el beat actual
+                        beats[pattern.currentBeat].classList.add('active');
+                        playClick(300 + pattern.beats * 50, 40, 0.6); // Diferentes sonidos para cada track
+
+                        pattern.currentBeat = (pattern.currentBeat + 1) % pattern.beats;
+                    }
+                }, 600 + (pattern.beats * 50)); // Velocidad ligeramente diferente para cada track
+                polymeterIntervals.push(interval);
+            });
+        }
+
+        function stopPolymeter() {
+            polymeterIntervals.forEach(interval => clearInterval(interval));
+            polymeterIntervals = [];
+            document.getElementById('polymeterOutput').innerText = 'Polimetría: -';
+
+            polymeterPatterns.forEach(pattern => {
+                const trackElement = document.getElementById(pattern.id);
+                const beats = trackElement.children;
+                for (let i = 0; i < beats.length; i++) {
+                    beats[i].classList.remove('active');
+                }
+                pattern.currentBeat = 0;
+            });
+        }
+
+        // --- Ametría ---
+        function startAmetry() {
+            stopAmetry();
+            ametryTimingIndex = 0;
+            ametryBeatCount = 0;
+
+            const ametryVisualizer = document.getElementById('ametryVisualizer');
+            ametryVisualizer.innerHTML = '';
+            // Create a few placeholder beats for visualization
+            for (let i = 0; i < 5; i++) {
+                const beat = document.createElement('div');
+                beat.className = 'beat';
+                ametryVisualizer.appendChild(beat);
+            }
+
+            function triggerAmetryBeat() {
+                const beats = ametryVisualizer.children;
+                if (beats.length === 0) return;
+
+                // Deactivate previous beat
+                if (ametryBeatCount > 0) {
+                    beats[ametryBeatCount - 1].classList.remove('active');
+                } else if (beats.length > 0) {
+                    beats[beats.length - 1].classList.remove('active');
+                }
+
+                // Activate current beat
+                beats[ametryBeatCount].classList.add('active');
+                playClick(480, 50, 0.7); // Generic sound for ametrical pulses
+
+                document.getElementById('ametryOutput').innerText = `Ametría: Pulso ${ametryBeatCount + 1}`;
+
+                ametryBeatCount = (ametryBeatCount + 1) % beats.length;
+
+                // Schedule the next beat with an irregular delay
+                const nextDelay = ametryTimingPattern[ametryTimingIndex];
+                ametryTimingIndex = (ametryTimingIndex + 1) % ametryTimingPattern.length;
+                ametryInterval = setTimeout(triggerAmetryBeat, nextDelay);
+            }
+
+            triggerAmetryBeat(); // Start the first beat
+        }
+
+        function stopAmetry() {
+            clearTimeout(ametryInterval);
+            ametryTimingIndex = 0;
+            ametryBeatCount = 0;
+            const beats = document.getElementById('ametryVisualizer').children;
+            for (let i = 0; i < beats.length; i++) {
+                beats[i].classList.remove('active');
+            }
+            document.getElementById('ametryOutput').innerText = 'Ametría: -';
+        }
+    </script>
+</body>
+</html>
